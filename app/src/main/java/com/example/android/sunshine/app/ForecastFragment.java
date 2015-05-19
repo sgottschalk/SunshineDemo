@@ -31,7 +31,6 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.List;
 
 
 /**
@@ -147,10 +146,15 @@ public class ForecastFragment extends Fragment {
          */
         private String formatHighLows(double high, double low) {
             // For presentation, assume the user doesn't care about tenths of a degree.
-            long roundedHigh = Math.round(high);
-            long roundedLow = Math.round(low);
-
-            return roundedHigh + "/" + roundedLow;
+            SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String unitsType = prefs.getString(getString(R.string.pref_units_key), getString(R.string.pref_units_metric));
+            if (getString(R.string.pref_units_metric).equals(unitsType)) {
+                return Math.round(high) + "/" + Math.round(low);
+            } else {
+                double highConverted = high * 1.8 + 32;
+                double lowConverted = low * 1.8 + 32;
+                return Math.round(highConverted) + "/" + Math.round(lowConverted);
+            }
         }
 
         /**
